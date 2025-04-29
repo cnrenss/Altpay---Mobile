@@ -25,6 +25,8 @@ const LoginScreen = ({navigation}) => {
 
             </View>
 
+            {/*BURAYA ŞART EKLENİCEK DOĞRU GİRİŞ YAPILMASI BEKLENİLECEK*/}
+
             <View style={{flex:1.9,alignItems: 'center'}}>
                 <TextInput
                     placeholder="E-Mail"
@@ -37,8 +39,8 @@ const LoginScreen = ({navigation}) => {
                     secureTextEntry
                     style={styles.input}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => alert('Butona bastın emmi')}>
-                    <Text style={styles.buttonText}>Giriş </Text>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+                    <Text style={styles.buttonText}>Giriş</Text>
                 </TouchableOpacity>
             </View>
             <BottomPanel style={styles.bottompanel} navigation={navigation} />
