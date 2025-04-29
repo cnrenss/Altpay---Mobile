@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image, TextInput, TouchableOpacity} from 'react-native';
 import BottomPanel from '../components/BottomPanel';
-
+// Git için deneme yorum satırı
 
 const LoginScreen = ({navigation}) => {
 
