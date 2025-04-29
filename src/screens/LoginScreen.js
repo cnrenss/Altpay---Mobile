@@ -1,10 +1,27 @@
-import React from 'react';
+
 import {View, Text, StyleSheet, Image, TextInput, TouchableOpacity} from 'react-native';
 import BottomPanel from '../components/BottomPanel';
+import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
+import { loginUser } from '../api/authApi';
+
 
 
 const LoginScreen = ({navigation}) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
+    const handleLogin = async () => {
+        try {
+            const data = await loginUser(email, password);
+            await AsyncStorage.setItem('token', data.token);
+            Alert.alert('Giriş Başarılı');
+            navigation.navigate('Home');
+        } catch (error) {
+            Alert.alert('Hata', error.message);
+        }
+    };
     return (
         <View style={styles.container}>
             <View style={styles.row}>
@@ -25,21 +42,24 @@ const LoginScreen = ({navigation}) => {
 
             </View>
 
-            {/*BURAYA ŞART EKLENİCEK DOĞRU GİRİŞ YAPILMASI BEKLENİLECEK*/}
 
             <View style={{flex:1.9,alignItems: 'center'}}>
                 <TextInput
                     placeholder="E-Mail"
                     placeholderTextColor="#D3D3D3"
                     style={styles.input}
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <TextInput
                     placeholder="Şifre"
                     placeholderTextColor="#D3D3D3"
                     secureTextEntry
                     style={styles.input}
+                    value={password}
+                    onChangeText={setPassword}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+                <TouchableOpacity style={styles.button} onPress={handleLogin}>
                     <Text style={styles.buttonText}>Giriş</Text>
                 </TouchableOpacity>
             </View>
