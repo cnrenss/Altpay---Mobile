@@ -7,6 +7,8 @@ import LinkListScreen from '../screens/LinkListScreen';
 import LinkCreateScreen from '../screens/LinkCreateScreen';
 import SanalPosScreen from '../screens/SanalPosScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import LoginScreen from '../screens/LoginScreen';
+
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -23,6 +25,11 @@ function PanelStackNav() {
         component={HomeScreen}
         options={{headerShown: false}}
       />
+        <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{headerShown: false}}
+        />
       <Stack.Screen
         name="LinkList"
         component={LinkListScreen}
@@ -95,6 +102,16 @@ function CustomDrawerContent(props) {
           </TouchableOpacity>
           <View style={styles.cizgi}> </View>
 
+          <TouchableOpacity onPress={() => navigation.navigate('PanelStackNav', { screen: 'Login' })}>
+
+              <View style={styles.exit}>
+
+                  <Image source={require('../assets/logout.png')} style={styles.image} />
+                  <Text style={styles.baslik}> Çıkış Yap </Text>
+              </View>
+
+          </TouchableOpacity>
+
 
 
       </DrawerContentScrollView>
@@ -151,6 +168,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 12,
         paddingHorizontal: 16,
-    }
+    },
+    exit: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 320,
+        justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: '#981515',
+        backgroundColor: '#981515',
+        borderRadius: 30,
+        width: '163',
+        height: 60,
+    },
 
 });
