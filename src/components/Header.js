@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function Header({ title, onMenuPress, onAvatarPress }) {
+    const navigation = useNavigation();
+
     return (
+
         <View style={styles.container}>
-            <TouchableOpacity onPress={onMenuPress}>
-                <Image
-                    source={require('../assets/menu.png')}
-                    style={styles.icon}
-                />
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+                <Image source={require('../assets/menu.png')} style={styles.icon} />
             </TouchableOpacity>
 
             <Text style={styles.title}>{title}</Text>
 
-            <TouchableOpacity onPress={onAvatarPress}>
+            <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                 <Image
                     source={require('../assets/avatar.png')}
                     style={styles.avatar}
@@ -25,7 +27,7 @@ export default function Header({ title, onMenuPress, onAvatarPress }) {
 
 const styles = StyleSheet.create({
     container: {
-        width: 420,
+        width: '100%',
         height: 92,
         flexDirection: 'row',
         alignItems: 'center',

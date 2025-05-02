@@ -1,23 +1,27 @@
-
-import {View, Text, StyleSheet, Image, TextInput, TouchableOpacity} from 'react-native';
-import BottomPanel from '../components/BottomPanel';
-import React, { useState } from 'react';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
-import { loginUser } from '../api/authApi';
-
+import {loginUser} from '../api/authApi';
 
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('Caner'); //@TODO değer sil
+    const [password, setPassword] = useState('caner'); //@TODO değer sil
 
     const handleLogin = async () => {
         try {
             const data = await loginUser(email, password);
             await AsyncStorage.setItem('token', data.token);
             Alert.alert('Giriş Başarılı');
-            navigation.navigate('Home');
+            navigation.replace('PanelNav');
         } catch (error) {
             Alert.alert('Hata', error.message);
         }
@@ -46,14 +50,14 @@ const LoginScreen = ({navigation}) => {
             <View style={{flex:1.9,alignItems: 'center'}}>
                 <TextInput
                     placeholder="E-Mail"
-                    placeholderTextColor="#D3D3D3"
+                    placeholderTextColor="gray"
                     style={styles.input}
                     value={email}
                     onChangeText={setEmail}
                 />
                 <TextInput
                     placeholder="Şifre"
-                    placeholderTextColor="#D3D3D3"
+                    placeholderTextColor="gray"
                     secureTextEntry
                     style={styles.input}
                     value={password}
@@ -63,7 +67,7 @@ const LoginScreen = ({navigation}) => {
                     <Text style={styles.buttonText}>Giriş</Text>
                 </TouchableOpacity>
             </View>
-            <BottomPanel style={styles.bottompanel} navigation={navigation} />
+
         </View>
     );
 };
@@ -110,12 +114,14 @@ const styles = StyleSheet.create({
     input: {
         width: 300,
         height: 54,
-        backgroundColor: '#0F5A2DAD',
+        borderColor: '#0F5A2D',
+        borderWidth: 4,
+        placeholderColor: 'black',
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 10,
         marginBottom: 20,
-        color: 'white',
+        color: 'black',
         fontSize: 16,
     },
     button: {
