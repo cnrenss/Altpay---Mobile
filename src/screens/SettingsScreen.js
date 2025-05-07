@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const SanalPosScreen = () => {
+export default function SettingsScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Bu bir Settings Screen Screen sayfasıdır.</Text>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SanalPosScreen;
+

@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     },
     baslik:{
         color: 'white',
-        fontWeight:'semibold',
+        fontWeight: '600',
         fontSize:20,
         marginLeft: 10,
     },
@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     image: {
-        width: '30',
-        height: '30',
+        width: 30,
+        height: 30,
     },
     menuItem: {
         flexDirection: 'row',
@@ -175,10 +175,10 @@ const styles = StyleSheet.create({
         marginTop: 320,
         justifyContent: 'center',
         borderWidth: 2,
-        borderColor: '#981515',
-        backgroundColor: '#981515',
+        borderColor: '#71281D',
+        backgroundColor: '#71281D',
         borderRadius: 30,
-        width: '163',
+        width: 163,
         height: 60,
     },
 
