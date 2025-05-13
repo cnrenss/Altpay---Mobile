@@ -39,21 +39,24 @@ export default function HomeScreen({ navigation }) {
   const QuickCard = ({ title, resim }) => (
       <View style={styles.quickcards}>
         <Image source={resim} style={styles.quicpng} />
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>
+          {title}
+        </Text>
       </View>
   );
 
+
   return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 ,backgroundColor:'#F4F4F4' }}>
         <Header
             title="Hoşgeldiniz!"
             onMenuPress={handleMenuPress}
             onAvatarPress={handleAvatarPress}
         />
-
+        <ScrollView>
         <View style={styles.container}>
           <StatCard title="Bugünkü Satış" value="1500 TL" />
-          <StatCard title="Toplam Link" value="10" />
+          <StatCard title="Toplam Link" value="5" />
           <StatCard title="Başarılı İşlem" value="5" />
           <StatCard title="İade / İptal" value="3" />
         </View>
@@ -64,7 +67,11 @@ export default function HomeScreen({ navigation }) {
 
         <View style={styles.quickContainer}>
           <TouchableOpacity onPress={() => navigation.navigate('LinkCreate')}>
-            <QuickCard title="Link Oluşturma" resim={require('../assets/arti.png')} />
+            <QuickCard title={
+              <>
+                Link {'\n'} Oluştur
+              </>
+            } resim={require('../assets/arti.png')} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('LinkList')}>
             <QuickCard title="Link Listesi" resim={require('../assets/link.png')} />
@@ -88,6 +95,7 @@ export default function HomeScreen({ navigation }) {
                   amount={item.amount}
               />
           ))}
+        </ScrollView>
         </ScrollView>
 
         <BottomPanel style={styles.bottompanel} navigation={navigation} />

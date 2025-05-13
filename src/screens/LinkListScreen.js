@@ -37,7 +37,7 @@ export default function LinkListScreen({ navigation }) {
         return `${formattedDate} - ${formattedTime}`;
     };
     const handleCopyLink = (uuid) => {
-        const paymentUrl = `http://localhost:3000/links/${uuid}`;
+        const paymentUrl = `http://localhost:3000/link/${uuid}/pay`;
          Clipboard.setString(paymentUrl);
         console.log('Link kopyalandı:', paymentUrl);
     };

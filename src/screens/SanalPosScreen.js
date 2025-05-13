@@ -5,13 +5,17 @@ import BottomPanel from '../components/BottomPanel';
 import { getAllLinks } from '../api/linkListApi';
 
 export default function SanalPosScreen({ navigation }) {
-    const [completedPayments, setCompletedPayments] = useState([]);
+
+    const [allPayments, setAllPayments] = useState([]);
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
                 const allLinks = await getAllLinks();
-                setCompletedPayments(allLinks);
+                const filtered = allLinks.filter(link =>
+                    link.paymentCase === 'success' || link.paymentCase === 'failed'
+                );
+                setAllPayments(filtered);
             } catch (error) {
                 console.error('Ödeme geçmişi alınamadı:', error.message);
             }
@@ -20,16 +24,21 @@ export default function SanalPosScreen({ navigation }) {
         fetchPayments();
     }, []);
 
-    const formatDate = (timestamp) => {
+    const formatDateTime = (timestamp) => {
         const date = new Date(timestamp);
-        return date.toLocaleDateString('tr-TR') + ' - ' + date.toLocaleTimeString('tr-TR', {
+        const turkishTime = new Date(date.getTime() + 3 * 60 * 60 * 1000);
+
+        const formattedDate = turkishTime.toLocaleDateString('tr-TR');
+        const formattedTime = turkishTime.toLocaleTimeString('tr-TR', {
             hour: '2-digit',
             minute: '2-digit',
         });
+
+        return `${formattedDate} - ${formattedTime}`;
     };
 
     const renderItem = ({ item }) => {
-        const isSuccess = item.status === 'tamamlandi';
+        const isSuccess = item.paymentCase === 'success';
         const statusText = isSuccess ? 'Ödendi' : 'Başarısız';
         const statusImage = isSuccess
             ? require('../assets/odendi.png')
@@ -50,7 +59,7 @@ export default function SanalPosScreen({ navigation }) {
 
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <Text style={styles.cardtext}>İşlem Tarihi:</Text>
-                    <Text style={styles.cardtextanswer}>{formatDate(item.createdAt)}</Text>
+                    <Text style={styles.cardtextanswer}>{formatDateTime(item.updatedAt)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <Text style={styles.cardtext}>Link Türü:</Text>
@@ -68,6 +77,7 @@ export default function SanalPosScreen({ navigation }) {
         );
     };
 
+
     return (
         <View style={styles.container}>
             <Header
@@ -80,19 +90,19 @@ export default function SanalPosScreen({ navigation }) {
                 <Image source={require('../assets/sanalpos.png')} style={styles.anaimage} />
                 <Text style={styles.headertext}> Sanal POS İşlemleri</Text>
 
-                {completedPayments.length > 0 ? (
-                    <FlatList
-                        data={completedPayments}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.uuid}
-                        contentContainerStyle={{ paddingBottom: 120 }}
-                    />
-                ) : (
-                    <View style={{ alignItems: 'center' }}>
-                        <Image source={require('../assets/sanalposundata.png')} style={styles.undataimage} />
-                        <Text style={styles.undatatext}>Henüz başarılı bir ödeme yapılmadı.</Text>
-                    </View>
-                )}
+                <FlatList
+                    data={allPayments}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.uuid}
+                    contentContainerStyle={{ paddingBottom: 120 }}
+                    ListEmptyComponent={() => (
+                        <View style={{ alignItems: 'center' }}>
+                            <Image source={require('../assets/sanalposundata.png')} style={styles.undataimage} />
+                            <Text style={styles.undatatext}>Henüz ödeme bulunamadı.</Text>
+                        </View>
+                    )}
+                />
+
             </View>
 
             <BottomPanel navigation={navigation} />

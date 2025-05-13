@@ -28,7 +28,7 @@ export default function Header({ title, onMenuPress, onAvatarPress }) {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height: 92,
+        height: 75,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -38,17 +38,17 @@ const styles = StyleSheet.create({
 
     },
     icon: {
-        marginTop:30,
+        marginTop:15,
         width: 40,
         height: 40,
     },
     title: {
         fontSize: 20,
-        marginTop:30,
+        marginTop:15,
         fontWeight: 'bold',
     },
     avatar: {
-        marginTop:30,
+        marginTop:15,
         width: 40,
         height: 40,
 

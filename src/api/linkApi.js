@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = 'http://10.0.2.2:3000';
 
-export const createPaymentLink = async (customerName,customerPhone, amount, description,createdAt) => {
+export const createPaymentLink = async (customerName,customerPhone, amount, description,createdAt,updatedAt) => {
     const token = await AsyncStorage.getItem('token');
     console.log('token:', token);
 
@@ -13,7 +13,7 @@ export const createPaymentLink = async (customerName,customerPhone, amount, desc
             'Authorization': `Bearer ${token}`,
 
         },
-        body: JSON.stringify({ customerName, customerPhone,amount, description,createdAt }),
+        body: JSON.stringify({ customerName, customerPhone,amount, description,createdAt,updatedAt }),
     });
 
     const data = await response.json();
