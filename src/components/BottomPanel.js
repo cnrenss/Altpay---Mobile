@@ -29,7 +29,7 @@ export default function BottomPanel({navigation}) {
           />
         </TouchableOpacity>
         {/* Buraya Koşul Eklenicek. Giriş Yapamayan kullanıcı settings'i açamayacak!*/}
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+        <TouchableOpacity onPress={() => navigation.navigate('settings')}>
           <Image
             source={require('../assets/settings.png')}
             style={styles.icon}

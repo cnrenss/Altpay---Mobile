@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { createPaymentLink } from '../api/linkApi';
 
+
 export default function LinkCreateScreen({navigation}) {
     const handleMenuPress = () => {
         console.log('Menü açılıyor...');
@@ -16,12 +17,15 @@ export default function LinkCreateScreen({navigation}) {
     const [customerName, setCustomerName] = useState('');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
 
     const handleCreateLink = async () => {
         try {
-            const result = await createPaymentLink(customerName, parseFloat(amount), description);
+            const result = await createPaymentLink(customerName,customerPhone, parseFloat(amount), description);
             Alert.alert('Başarılı', 'Link oluşturuldu!');
-            console.log(result);
+
+
+                console.log(result);
         } catch (error) {
             Alert.alert('Hata', error.message);
         }
@@ -63,6 +67,16 @@ export default function LinkCreateScreen({navigation}) {
                     />
                 </View>
                 <View style={styles.borderinput }>
+                    <Image style={{marginLeft:10,width:40,height:40}} source={require('../assets/phone.png')} />
+                    <TextInput
+                        placeholder="Müşteri Cep Telefonu"
+                        placeholderTextColor="#7A7A7A"
+                        style={styles.input}
+                        value={customerPhone}
+                        onChangeText={setCustomerPhone}
+                    />
+                </View>
+                <View style={styles.borderinput }>
                     <Image style={{marginLeft:10,width:40,height:40}} source={require('../assets/Notes.png')} />
                     <TextInput
                         placeholder="Açıklama"
@@ -96,7 +110,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     anaimage: {
-        marginTop:52,
+        marginTop:30,
         width: 97,
         height: 95,
         resizeMode: 'contain',
@@ -105,14 +119,14 @@ const styles = StyleSheet.create({
         fontSize: 36,
         color: '#0F5A2D',
         fontWeight: '600',
-        marginTop: 29,
+        marginTop: 10,
     },
     descriptiontext:{
         fontWeight: 600,
         color: '#0F5A2D',
         fontSize: 20,
-        marginTop: 29,
-        marginBottom:53,
+        marginTop: 14,
+        marginBottom:20,
     },
     borderinput:{
         alignItems: 'center',
@@ -145,7 +159,6 @@ const styles = StyleSheet.create({
         fontWeight:600,
         fontSize: 32,
         color: '#FFF',
-
     },
 
     bottompanel: {

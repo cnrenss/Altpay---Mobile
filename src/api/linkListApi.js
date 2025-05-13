@@ -7,7 +7,7 @@ export const getAllLinks = async () => {
     const token = await AsyncStorage.getItem('token');
     if (!token) throw new Error('Token alınamadı. Lütfen tekrar giriş yapın.');
 
-    const response = await fetch(`${BASE_URL}/links`, {
+    const response = await fetch(`${BASE_URL}/link`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -23,7 +23,7 @@ export const updateLinkStatus = async (uuid, newStatus) => {
     const token = await AsyncStorage.getItem('token');
     if (!token) throw new Error('Token alınamadı. Lütfen tekrar giriş yapın.');
 
-    const response = await fetch(`${BASE_URL}/links/${uuid}/status`, {
+    const response = await fetch(`${BASE_URL}/link/${uuid}/status`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',

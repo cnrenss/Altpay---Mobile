@@ -86,9 +86,11 @@ export default function LinkListScreen({ navigation }) {
                 <View style={styles.cardContent}>
 
 
-                    <Text style={styles.username}>{item.customerName}</Text>
-                    <Text style={styles.amount}>{item.amount}</Text>
-                    <Text style={styles.date}>{formatDateTime(item.createdAt)}</Text>
+                    <Text style={styles.username}>{item.customerName.substring(0,15)}</Text>
+                    <Text style={styles.amount}>Tutar: {item.amount}</Text>
+                    <Text style={styles.customerPhone}>Telefon: {item.customerPhone}</Text>
+                    <Text style={styles.date}>Tarih: {formatDateTime(item.createdAt)}</Text>
+
                 </View>
 
                 <View style={[styles.statusBox, statusColor]}>
@@ -246,13 +248,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
     },
+
     amount: {
         fontSize: 18,
         color: '#5F5F5F',
         marginTop: 10,
     },
+    customerPhone: {
+        fontSize: 18,
+        color: '#5F5F5F',
+        marginTop: 5,
+    },
     date: {
-        fontSize: 16,
+        fontSize: 17,
         color: '#5F5F5F',
         marginTop: 5,
     },
@@ -279,7 +287,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#981515',
     },
     completed: {
-        backgroundColor: '#2D9CDB',
+        backgroundColor: '#0F5A2D',
     },
     menuIcon: {
         width: 24,
