@@ -16,7 +16,6 @@ import {
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { createPaymentLink } from '../api/linkApi';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function LinkCreateScreen({ navigation }) {
     const [customerName, setCustomerName] = useState('');

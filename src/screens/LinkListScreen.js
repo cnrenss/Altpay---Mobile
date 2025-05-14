@@ -1,5 +1,5 @@
 import React, { useEffect, useState,  } from 'react';
-import {View, Pressable, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView} from 'react-native';
+import {View,  Text, StyleSheet, Image, FlatList, TouchableOpacity, } from 'react-native';
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { getAllLinks, updateLinkStatus } from '../api/linkListApi';

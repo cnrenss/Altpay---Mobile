@@ -19,9 +19,9 @@ export default function HomeScreen({ navigation }) {
           name: link.customerName,
           date: new Date(link.updatedAt).toLocaleString('tr-TR', {
             day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
+            hour: '2-digit', minute: '2-digit',
           }),
-          amount: link.amount
+          amount: link.amount,
         }));
         setTransactions(formatted);
       } catch (error) {
