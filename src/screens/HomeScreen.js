@@ -3,23 +3,35 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import TransactionCard from '../components/TransactionCard';
+import { getSuccessfulLinks } from '../api/linkListApi';
+
 
 
 export default function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    const fetchMockTransactions = () => {
-      const data = [
-        { id: 1, name: 'Caner Uludağ', date: '02.05.2025 11:00', amount: 500 },
-        { id: 2, name: 'Ezgi Öztürk', date: '02.05.2025 12:30', amount: 750 },
-        { id: 3, name: 'Ahmet Demir', date: '02.05.2025 14:10', amount: 300 },
-      ];
-      setTransactions(data);
+    const fetchTransactions = async () => {
+      try {
+        const links = await getSuccessfulLinks();
+        const formatted = links.map(link => ({
+          id: link.id,
+          name: link.customerName,
+          date: new Date(link.updatedAt).toLocaleString('tr-TR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+          }),
+          amount: link.amount
+        }));
+        setTransactions(formatted);
+      } catch (error) {
+        console.error('İşlemler alınamadı:', error.message);
+      }
     };
 
-    fetchMockTransactions();
+    fetchTransactions();
   }, []);
+
 
   const handleMenuPress = () => {
     console.log('Menü açılıyor...');
@@ -85,17 +97,27 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.baslik}> Son İşlemler</Text>
         </View>
 
-        <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 100,        marginTop: 15,
-        }}>
-          {transactions.map(item => (
-              <TransactionCard
-                  key={item.id}
-                  name={item.name}
-                  date={item.date}
-                  amount={item.amount}
-              />
-          ))}
-        </ScrollView>
+          <ScrollView
+              contentContainerStyle={{
+                alignItems: 'center',
+                paddingBottom: 100,
+                marginTop: 15,
+              }}
+          >
+            {transactions.length === 0 ? (
+                <Text style={styles.emptyWarning}>Gösterilecek bir işlem bulunmamaktadır.</Text>
+            ) : (
+                transactions.map(item => (
+                    <TransactionCard
+                        key={item.id}
+                        name={item.name}
+                        date={item.date}
+                        amount={item.amount}
+                    />
+                ))
+            )}
+          </ScrollView>
+
         </ScrollView>
 
         <BottomPanel style={styles.bottompanel} navigation={navigation} />
@@ -110,6 +132,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 15,
+  },
+  emptyWarning:{
+    fontSize: 19,
+    fontWeight:'semibold',
+    marginTop:30,
   },
   card: {
     width: 182,

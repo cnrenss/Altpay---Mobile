@@ -1,5 +1,5 @@
 import React, { useEffect, useState,  } from 'react';
-import { View,Pressable , Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import {View, Pressable, Text, StyleSheet, Image, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { getAllLinks, updateLinkStatus } from '../api/linkListApi';
@@ -145,6 +145,7 @@ export default function LinkListScreen({ navigation }) {
         );
     };
 
+
     return (
         <View style={styles.container}>
             <Header
@@ -152,30 +153,33 @@ export default function LinkListScreen({ navigation }) {
                 onMenuPress={() => console.log('Menü')}
                 onAvatarPress={() => console.log('Avatar')}
             />
+
             <View style={styles.imagewrapper}>
                 <Image style={styles.anaimage} source={require('../assets/LinkList.png')} />
                 <Text style={styles.baslik}>Ödeme Linkleri</Text>
-
-                {links.length === 0 ? (
-                    <>
-                        <Image style={{ marginTop: 50 }} source={require('../assets/nolink.png')} />
-                        <Text style={styles.emptyText}>Henüz oluşturulmuş bir ödeme linkiniz bulunmamaktadır.</Text>
-                    </>
-                ) : (
-                    <Pressable onPress={() => setShowMenuFor(null)} style={{ flex: 1 }}>
-                        <FlatList
-                            data={links}
-                            renderItem={renderLinkItem}
-                            keyExtractor={(item) => item.id}
-                            contentContainerStyle={{ paddingBottom: 120 }}
-                        />
-                    </Pressable>
-
-                )}
-                <BottomPanel navigation={navigation} />
             </View>
+
+            {links.length === 0 ? (
+                <View style={{ alignItems: 'center', marginTop: 20 }}>
+                    <Image style={{ marginTop: 50 }} source={require('../assets/nolink.png')} />
+                    <Text style={styles.emptyText}>
+                        Henüz oluşturulmuş bir ödeme linkiniz bulunmamaktadır.
+                    </Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={links}
+                    renderItem={renderLinkItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 10 }}
+                    keyboardShouldPersistTaps="handled"
+                />
+            )}
+
+            <BottomPanel navigation={navigation} />
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
@@ -202,9 +206,9 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     imagewrapper: {
-        flex: 1,
         alignItems: 'center',
         marginTop: 20,
+        marginBottom: 10,
     },
     anaimage: {
         width: 90,

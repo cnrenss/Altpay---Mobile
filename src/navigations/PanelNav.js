@@ -8,6 +8,8 @@ import LinkCreateScreen from '../screens/LinkCreateScreen';
 import SanalPosScreen from '../screens/SanalPosScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import LoginScreen from '../screens/LoginScreen';
+import updatepassScreen from '../screens/updatepassScreen';
+import updateaccScreen from '../screens/updateaccScreen';
 
 import {
   createDrawerNavigator,
@@ -30,6 +32,7 @@ function PanelStackNav() {
             component={LoginScreen}
             options={{headerShown: false}}
         />
+
       <Stack.Screen
         name="LinkList"
         component={LinkListScreen}
@@ -50,6 +53,17 @@ function PanelStackNav() {
             component={SettingsScreen}
             options={{headerShown: false}}
             />
+        <Stack.Screen
+            name="UpdatePass"
+            component={updatepassScreen}
+            options={{headerShown: false}}
+            />
+        <Stack.Screen
+            name="UpdateAcc"
+            component={updateaccScreen}
+            options={{headerShown: false}}
+            />
+
     </Stack.Navigator>
   );
 }

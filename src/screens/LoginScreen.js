@@ -1,16 +1,20 @@
 import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    TouchableWithoutFeedback,
+    Keyboard,
 } from 'react-native';
 import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginUser} from '../api/authApi';
-
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('Caner'); //@TODO değer sil
@@ -26,9 +30,15 @@ const LoginScreen = ({navigation}) => {
             Alert.alert('Hata', error.message);
         }
     };
+
     return (
-        <View style={styles.container}>
-            <View style={styles.row}>
+        <KeyboardAvoidingView
+            style={{flex: 1, backgroundColor: '#f4f4f4'}}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
+
+            {/* Üst sabit logo */}
+            <View style={styles.header}>
                 <Image
                     source={require('../assets/AltPayHeader.png')}
                     style={styles.logo}
@@ -36,62 +46,57 @@ const LoginScreen = ({navigation}) => {
                 />
                 <Text style={styles.text}>AltPay</Text>
             </View>
-            <View style={styles.container}>
-                <Image
-                    source={require('../assets/pp.png')}
-                    style={styles.pplogo}
-                    resizeMode="contain"
-                />
-                <Text style={styles.text2}>AltPay'e Hoşgeldiniz!</Text>
 
-            </View>
+            {/* Scrollable alan */}
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView
+                    contentContainerStyle={styles.scrollContainer}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}>
 
-
-            <View style={{flex:1.9,alignItems: 'center'}}>
-                <TextInput
-                    placeholder="E-Mail"
-                    placeholderTextColor="gray"
-                    style={styles.input}
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    placeholder="Şifre"
-                    placeholderTextColor="gray"
-                    secureTextEntry
-                    style={styles.input}
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.buttonText}>Giriş</Text>
-                </TouchableOpacity>
-            </View>
-
-        </View>
+                    <View style={styles.centerContent}>
+                        <Image
+                            source={require('../assets/pp.png')}
+                            style={styles.pplogo}
+                            resizeMode="contain"
+                        />
+                        <Text style={styles.text2}>AltPay'e Hoşgeldiniz!</Text>
+                        <TextInput
+                            placeholder="E-Mail"
+                            placeholderTextColor="gray"
+                            style={styles.input}
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+                        <TextInput
+                            placeholder="Şifre"
+                            placeholderTextColor="gray"
+                            secureTextEntry
+                            style={styles.input}
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                            <Text style={styles.buttonText}>Giriş</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 
-
 const styles = StyleSheet.create({
-    bottompanel: {
-        flex: 1,
-        paddingBottom: 60,
-    },
-    container: {
-        backgroundColor: '#f4f4f4',
-        flex: 1,
+    header: {
         marginTop: 50,
-        alignItems: 'center',
-    },
-    row: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
     },
     logo: {
         width: 60,
         height: 60,
-        marginRight: 10,
     },
     text: {
         fontSize: 40,
@@ -99,25 +104,35 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         fontStyle: 'italic',
     },
-    text2:{
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 20,
+        paddingBottom: 40,
+    },
+    centerContent: {
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    pplogo: {
+        marginTop: 10,
+        width: 164,
+        height: 140,
+        marginBottom:10,
+    },
+    text2: {
         fontSize: 32,
         color: '#0F5A2D',
         fontWeight: '600',
-
-    },
-    pplogo:{
-
-        marginTop: 40,
-        width: 164,
-        height: 140,
-
+        textAlign: 'center',
+        marginBottom: 35,
     },
     input: {
         width: 300,
         height: 54,
         borderColor: '#0F5A2D',
         borderWidth: 4,
-        placeholderColor: 'black',
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 10,
@@ -126,7 +141,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        marginTop: 40,
+        marginTop: 20,
         backgroundColor: '#0F5A2D',
         width: 200,
         height: 58,
@@ -139,7 +154,6 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: '600',
     },
-
 });
 
 export default LoginScreen;
