@@ -16,7 +16,7 @@ export const loginUser = async (email, password) => {
 
         await AsyncStorage.setItem('token', data.token);
         if (data.user) {
-            await AsyncStorage.setItem('user', JSON.stringify(data.user)); // kullanıcı bilgisi varsa sakla
+            await AsyncStorage.setItem('user', JSON.stringify(data.user));
         }
 
         return data;
@@ -24,3 +24,46 @@ export const loginUser = async (email, password) => {
         throw error;
     }
 };
+
+// Kullanıcıyı getirme
+export const getUserProfile = async () => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) throw new Error('Token bulunamadı');
+
+        const response = await fetch(`${BASE_URL}/auth/profile`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.message || 'Profil verisi alınamadı');
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updatePassword = async (oldPassword, newPassword, newPasswordRepeat) => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) throw new Error('Token bulunamadı');
+
+    const response = await fetch(`${BASE_URL}/auth/update-password`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ oldPassword, newPassword, newPasswordRepeat }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Şifre güncelleme başarısız');
+
+    return data;
+};
+

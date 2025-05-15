@@ -5,8 +5,6 @@ import BottomPanel from '../components/BottomPanel';
 import TransactionCard from '../components/TransactionCard';
 import { getSuccessfulLinks } from '../api/linkListApi';
 
-
-
 export default function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
 

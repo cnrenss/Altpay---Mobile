@@ -17,8 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginUser} from '../api/authApi';
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState('Caner'); //@TODO değer sil
-    const [password, setPassword] = useState('caner'); //@TODO değer sil
+    const [email, setEmail] = useState('@alttantire.com'); //@TODO değer sil
+    const [password, setPassword] = useState('123456'); //@TODO değer sil
 
     const handleLogin = async () => {
         try {
@@ -37,7 +37,7 @@ const LoginScreen = ({navigation}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
 
-            {/* Üst sabit logo */}
+
             <View style={styles.header}>
                 <Image
                     source={require('../assets/AltPayHeader.png')}
@@ -74,6 +74,7 @@ const LoginScreen = ({navigation}) => {
                             secureTextEntry
                             style={styles.input}
                             value={password}
+                            keyboardType="numeric"
                             onChangeText={setPassword}
                         />
                         <TouchableOpacity style={styles.button} onPress={handleLogin}>

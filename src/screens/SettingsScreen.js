@@ -1,9 +1,29 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
+import { getUserProfile } from '../api/authApi';
 
 export default function SettingsScreen() {
+  const [profile, setProfile] = useState({
+    name: '',
+    surname: '',
+    phone: '',
+    email: '',
+  });
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await getUserProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error('Profil alınamadı:', error.message);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleMenuPress = () => {
     console.log('Menü açılıyor...');
   };
@@ -11,14 +31,14 @@ export default function SettingsScreen() {
   const handleAvatarPress = () => {
     console.log('Avatar basıldı.');
   };
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const openPass = () => {
-        navigation.navigate('UpdatePass');
-    };
-    const openAcc = () => {
-        navigation.navigate('UpdateAcc');
-    };
+  const openPass = () => {
+    navigation.navigate('UpdatePass');
+  };
+  const openAcc = () => {
+    navigation.navigate('UpdateAcc');
+  };
   return (
     <View style={styles.container}>
       <Header
@@ -27,7 +47,10 @@ export default function SettingsScreen() {
         onAvatarPress={handleAvatarPress}
       />
       <Image source={require('../assets/avatar.png')} style={styles.logo} />
-      <Text style={styles.headtext}>NAME-SURNAME</Text>
+      <Text style={styles.headtext}>
+        {' '}
+        {profile.name} {profile.surname}{' '}
+      </Text>
 
       <View style={styles.borderone}>
         <View style={{flexDirection: 'row'}}>
@@ -35,7 +58,7 @@ export default function SettingsScreen() {
             source={require('../assets/gmail.png')}
             style={styles.borderlogo}
           />
-          <Text style={styles.bordertext}>erdem@alttantire.com</Text>
+          <Text style={styles.bordertext}> {profile.email} </Text>
         </View>
         <View style={styles.bordercizgi}></View>
         <View style={{flexDirection: 'row'}}>
@@ -43,7 +66,7 @@ export default function SettingsScreen() {
             source={require('../assets/phone.png')}
             style={styles.borderlogo}
           />
-          <Text style={styles.bordertext}>05452170084</Text>
+          <Text style={styles.bordertext}>{profile.phone}</Text>
         </View>
       </View>
 

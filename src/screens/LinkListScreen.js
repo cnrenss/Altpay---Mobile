@@ -176,9 +176,9 @@ export default function LinkListScreen({ navigation }) {
                 />
             )}
 
-            <BottomPanel navigation={navigation} />
         </View>
-    );
+
+);
 
 }
 
