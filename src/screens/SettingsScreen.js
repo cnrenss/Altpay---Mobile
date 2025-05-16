@@ -1,8 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import Header from '../components/Header';
-import { useNavigation } from '@react-navigation/native';
 import { getUserProfile } from '../api/authApi';
+import { useNavigation } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function SettingsScreen() {
   const [profile, setProfile] = useState({
@@ -11,6 +19,9 @@ export default function SettingsScreen() {
     phone: '',
     email: '',
   });
+
+  const navigation = useNavigation();
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -24,139 +35,113 @@ export default function SettingsScreen() {
     fetchProfile();
   }, []);
 
-  const handleMenuPress = () => {
-    console.log('Menü açılıyor...');
-  };
+  const openPass = () => navigation.navigate('UpdatePass');
+  const openAcc = () => navigation.navigate('UpdateAcc');
 
-  const handleAvatarPress = () => {
-    console.log('Avatar basıldı.');
-  };
-  const navigation = useNavigation();
-
-  const openPass = () => {
-    navigation.navigate('UpdatePass');
-  };
-  const openAcc = () => {
-    navigation.navigate('UpdateAcc');
-  };
   return (
-    <View style={styles.container}>
-      <Header
-        title="Profil ve Ayarlar"
-        onMenuPress={handleMenuPress}
-        onAvatarPress={handleAvatarPress}
-      />
-      <Image source={require('../assets/avatar.png')} style={styles.logo} />
-      <Text style={styles.headtext}>
-        {' '}
-        {profile.name} {profile.surname}{' '}
-      </Text>
+      <View style={styles.container}>
+        <Header title="Profil ve Ayarlar" />
 
-      <View style={styles.borderone}>
-        <View style={{flexDirection: 'row'}}>
-          <Image
-            source={require('../assets/gmail.png')}
-            style={styles.borderlogo}
-          />
-          <Text style={styles.bordertext}> {profile.email} </Text>
-        </View>
-        <View style={styles.bordercizgi}></View>
-        <View style={{flexDirection: 'row'}}>
-          <Image
-            source={require('../assets/phone.png')}
-            style={styles.borderlogo}
-          />
-          <Text style={styles.bordertext}>{profile.phone}</Text>
-        </View>
-      </View>
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Image source={require('../assets/avatar.png')} style={styles.avatar} />
+          <Text style={styles.name}>
+            {profile.name} {profile.surname}
+          </Text>
 
-      <View style={styles.borderone}>
-        <TouchableOpacity onPress={openAcc}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              source={require('../assets/ppsettings.png')}
-              style={styles.borderlogo}
-            />
-            <Text style={styles.bordertextalt}>Hesap Ayarları</Text>
-            <View style={{flex: 1, alignItems: 'flex-end', marginTop: 34}}>
-              <Image
-                source={require('../assets/detay.png')}
-                style={[styles.detaylogo]}
-              />
+          {/* Mail ve Telefon kutusu */}
+          <View style={styles.box}>
+            <View style={styles.boxRow}>
+              <Image source={require('../assets/gmail.png')} style={styles.icon} />
+              <Text style={styles.boxText}>{profile.email}</Text>
+            </View>
+            <View style={styles.line} />
+            <View style={styles.boxRow}>
+              <Image source={require('../assets/phone.png')} style={styles.icon} />
+              <Text style={styles.boxText}>{profile.phone}</Text>
             </View>
           </View>
-        </TouchableOpacity>
-        <View style={styles.bordercizgi}></View>
-        <TouchableOpacity onPress={openPass}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Image
-              source={require('../assets/pppass.png')}
-              style={styles.borderlogo}
-            />
-            <Text style={styles.bordertextalt}>Şifreyi Değiştir</Text>
-            <View style={{flex: 1, alignItems: 'flex-end', marginTop: 34}}>
-              <Image
-                source={require('../assets/detay.png')}
-                style={[styles.detaylogo]}
-              />
-            </View>
+
+          {/* Hesap Ayarları */}
+          <View style={styles.box}>
+            <TouchableOpacity onPress={openAcc}>
+              <View style={styles.boxRow}>
+                <Image source={require('../assets/ppsettings.png')} style={styles.icon} />
+                <Text style={styles.boxText}>Hesap Ayarları</Text>
+                <Image source={require('../assets/detay.png')} style={styles.arrow} />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.line} />
+            <TouchableOpacity onPress={openPass}>
+              <View style={styles.boxRow}>
+                <Image source={require('../assets/pppass.png')} style={styles.icon} />
+                <Text style={styles.boxText}>Şifreyi Değiştir</Text>
+                <Image source={require('../assets/detay.png')} style={styles.arrow} />
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </ScrollView>
       </View>
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
   },
-  detaylogo: {
-    width: 20,
-    height: 20,
-    marginRight: 30,
+  scroll: {
+    alignItems: 'center',
+    paddingBottom: hp('10%'),
   },
-  bordercizgi: {
-    marginTop: 25.5,
-    borderWidth: 1,
-    borderColor: '#0F5A2D',
+  avatar: {
+    width: wp('40%'),
+    height: wp('40%'),
+    resizeMode: 'contain',
+    marginTop: hp('3%'),
   },
-  bordertext: {
-    fontSize: 20,
-    marginLeft: 21,
-    marginTop: 30,
-    fontWeight: 600,
-  },
-  bordertextalt: {
-    fontSize: 20,
-    marginLeft: 21,
-    marginTop: 24,
-    fontWeight: 600,
-  },
-  borderlogo: {
-    marginTop: 26,
-    width: 40,
-    height: 40,
-    marginLeft: 21,
-  },
-  borderone: {
-    marginTop: 33,
-    borderWidth: 4,
-    borderColor: '#0F5A2D',
-    width: 371,
-    height: 183,
-    borderRadius: 20,
-  },
-  logo: {
-    marginTop: 33,
-    width: 161,
-    height: 147,
-  },
-  headtext: {
-    fontSize: 36,
-    color: '#0F5A2D',
+  name: {
+    fontSize: wp('7%'),
     fontWeight: '600',
+    color: '#0F5A2D',
+    marginVertical: hp('2%'),
+  },
+  box: {
+    width: wp('90%'),
+    borderWidth: 3,
+    borderRadius: 16,
+    borderColor: '#0F5A2D',
+    marginBottom: hp('2.5%'),
+    paddingVertical: hp('2%'),
+    paddingHorizontal: wp('4%'),
+  },
+  boxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: hp('1%'),
+  },
+  icon: {
+    width: wp('8%'),
+    height: wp('8%'),
+    resizeMode: 'contain',
+    marginRight: wp('2%'),
+  },
+  boxText: {
+    flex: 1,
+    fontSize: wp('4.5%'),
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: wp('2%'),
+  },
+  line: {
+    height: 1,
+    backgroundColor: '#0F5A2D',
+    marginVertical: hp('1.5%'),
+  },
+  arrow: {
+    width: wp('5%'),
+    height: wp('5%'),
+    resizeMode: 'contain',
+    tintColor: '#0F5A2D',
   },
 });

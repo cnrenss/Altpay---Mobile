@@ -11,21 +11,31 @@ import {
   Keyboard,
   Platform,
   Image,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { updatePassword } from '../api/authApi';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-export default function UpdateAccScreen({ navigation }) {
+export default function UpdatePassScreen({ navigation }) {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordRepeat, setNewPasswordRepeat] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
-  // Şifre gösterme/gizleme için state'ler
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [showRepeatPass, setShowRepeatPass] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const handlePasswordUpdate = async () => {
     try {
@@ -39,100 +49,48 @@ export default function UpdateAccScreen({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
+  const renderInput = (label, value, setValue, showPass, setShowPass) => (
+      <View style={styles.inputSection}>
+        <Text style={styles.label}>{label}</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+              placeholder={`${label} giriniz`}
+              placeholderTextColor="#7A7A7A"
+              secureTextEntry={!showPass}
+              value={value}
+              onChangeText={setValue}
+              style={styles.input}
+              keyboardType="numeric"
+          />
+          <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+            <Image source={require('../assets/eye.png')} style={styles.eyeIcon} />
+          </TouchableOpacity>
+        </View>
+      </View>
+  );
 
   return (
       <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.container}
-      >
-        <Header title="Şifre Güncelleme" />
-        <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}>
-          <Text style={styles.baslik}> Şifre Güncelleme </Text>
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={{ flex: 1 }}>
+            <Header title="Şifre Güncelleme" />
+            <ScrollView contentContainerStyle={styles.scroll}>
+              <Text style={styles.title}>Şifre Güncelleme</Text>
 
-          {/* Eski Şifre */}
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>Eski Şifre</Text>
-          </View>
-          <View style={styles.border}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                  placeholder="Mevcut Şifrenizi Giriniz.."
-                  placeholderTextColor="#7A7A7A"
-                  style={styles.placetextInput}
-                  secureTextEntry={!showOldPass}
-                  value={oldPassword}
-                  onChangeText={setOldPassword}
-                  keyboardType="numeric"
-              />
-              <TouchableOpacity onPress={() => setShowOldPass(!showOldPass)}>
-                <Image source={require('../assets/eye.png')} style={styles.eyeIcon} />
+              {renderInput('Eski Şifre', oldPassword, setOldPassword, showOldPass, setShowOldPass)}
+              {renderInput('Yeni Şifre', newPassword, setNewPassword, showNewPass, setShowNewPass)}
+              {renderInput('Yeni Şifre Tekrar', newPasswordRepeat, setNewPasswordRepeat, showRepeatPass, setShowRepeatPass)}
+
+              <TouchableOpacity style={styles.button} onPress={handlePasswordUpdate}>
+                <Text style={styles.buttonText}>Şifreyi Güncelle</Text>
               </TouchableOpacity>
-            </View>
-          </View>
+            </ScrollView>
 
-          {/* Yeni Şifre */}
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>Yeni Şifre</Text>
+            {!keyboardVisible && <BottomPanel navigation={navigation} />}
           </View>
-          <View style={styles.border}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                  placeholder="Yeni Şifrenizi Giriniz."
-                  placeholderTextColor="#7A7A7A"
-                  style={styles.placetextInput}
-                  secureTextEntry={!showNewPass}
-                  value={newPassword}
-                  onChangeText={setNewPassword}
-                  keyboardType="numeric"
-              />
-              <TouchableOpacity onPress={() => setShowNewPass(!showNewPass)}>
-                <Image source={require('../assets/eye.png')} style={styles.eyeIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Yeni Şifre Tekrar */}
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>Yeni Şifre Tekrar</Text>
-          </View>
-          <View style={styles.border}>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                  placeholder="Yeni Şifrenizi Giriniz."
-                  placeholderTextColor="#7A7A7A"
-                  style={styles.placetextInput}
-                  secureTextEntry={!showRepeatPass}
-                  value={newPasswordRepeat}
-                  onChangeText={setNewPasswordRepeat}
-                  keyboardType="numeric"
-              />
-              <TouchableOpacity onPress={() => setShowRepeatPass(!showRepeatPass)}>
-                <Image source={require('../assets/eye.png')} style={styles.eyeIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <TouchableOpacity onPress={handlePasswordUpdate}>
-            <View style={styles.uploadborder}>
-              <Text style={styles.text}> Şifreyi Güncelle </Text>
-            </View>
-          </TouchableOpacity>
-        </ScrollView>
-
-        {!keyboardVisible && <BottomPanel navigation={navigation} />}
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
   );
 }
@@ -140,63 +98,63 @@ export default function UpdateAccScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F2F2F2',
   },
-  uploadborder: {
-    backgroundColor: '#0F5A2D',
+  scroll: {
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 362,
-    height: 81,
-    borderWidth: 3,
-    borderRadius: 20,
-    borderColor: '#0F5A2D',
-    marginTop: 10,
-    marginBottom: 30,
+    paddingBottom: hp('10%'),
   },
-  borderheader: {
-    fontSize: 24,
+  title: {
+    fontSize: wp('7%'),
+    fontWeight: '600',
+    color: '#0F5A2D',
+    marginVertical: hp('3%'),
+  },
+  inputSection: {
+    width: wp('90%'),
+    marginBottom: hp('2%'),
+  },
+  label: {
+    fontSize: wp('4.8%'),
     color: '#0F5A2D',
     fontWeight: '600',
-    marginBottom: 15,
+    marginBottom: hp('1%'),
   },
-  baslik: {
-    marginTop: 45,
-    color: '#0F5A2D',
-    fontSize: 32,
-    fontWeight: '600',
-    marginBottom: 35,
-  },
-  placetextInput: {
-    flex: 1,
-    color: 'black',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  border: {
-    width: 362,
-    height: 81,
-    borderRadius: 20,
-    borderColor: '#0F5A2D',
-    backgroundColor: '#f2f2f2',
-    borderWidth: 2,
-    justifyContent: 'center',
-    marginBottom: 25,
-    paddingHorizontal: 10,
-  },
-  text: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  inputWrapper: {
+  inputContainer: {
     flexDirection: 'row',
+    borderWidth: 2,
+    borderColor: '#0F5A2D',
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    paddingHorizontal: wp('4%'),
     alignItems: 'center',
+    height: hp('7.5%'),
+  },
+  input: {
+    flex: 1,
+    fontSize: wp('4.5%'),
+    color: '#000',
+    fontWeight: '600',
   },
   eyeIcon: {
-    width: 24,
-    height: 24,
+    width: wp('6%'),
+    height: wp('6%'),
     tintColor: '#0F5A2D',
-    marginLeft: 10,
+  },
+  button: {
+    marginTop: hp('3%'),
+    backgroundColor: '#0F5A2D',
+    width: wp('80%'),
+    height: hp('8%'),
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#0F5A2D',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: wp('5.5%'),
+    fontWeight: '600',
   },
 });

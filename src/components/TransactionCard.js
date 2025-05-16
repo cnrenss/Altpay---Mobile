@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const TransactionCard = ({ name, date, amount }) => {
     return (
@@ -15,31 +16,32 @@ const TransactionCard = ({ name, date, amount }) => {
 
 const styles = StyleSheet.create({
     card: {
-        width: 405,
-        height: 70,
-
+        width: wp('90%'),
+        height: hp('9%'),
         backgroundColor: '#FFF',
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: '#0F5A2D',
-        borderRadius: 16,
-        marginBottom: 16,
-        paddingHorizontal: 14,
+        borderRadius: wp('4%'),
+        marginBottom: hp('2%'),
+        paddingHorizontal: wp('4%'),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        alignSelf: 'center',
     },
     name: {
-        fontSize: 24,
+        fontSize: wp('5%'),
         fontWeight: '600',
-        color: 'black',
+        color: '#000',
     },
     date: {
-        fontSize: 20,
-        fontWeight: '600',
+        fontSize: wp('4%'),
+        fontWeight: '500',
         color: 'rgba(0, 0, 0, 0.73)',
+        marginTop: hp('0.5%'),
     },
     amount: {
-        fontSize: 24,
+        fontSize: wp('5%'),
         fontWeight: '700',
         color: '#0F5A2D',
     },

@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    FlatList,
+} from 'react-native';
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { getAllLinks } from '../api/linkListApi';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function SanalPosScreen({ navigation }) {
-
     const [allPayments, setAllPayments] = useState([]);
 
     useEffect(() => {
@@ -26,15 +32,11 @@ export default function SanalPosScreen({ navigation }) {
 
     const formatDateTime = (timestamp) => {
         const date = new Date(timestamp);
-        const turkishTime = new Date(date.getTime() + 3 * 60 * 60 * 1000);
-
-        const formattedDate = turkishTime.toLocaleDateString('tr-TR');
-        const formattedTime = turkishTime.toLocaleTimeString('tr-TR', {
+        const trTime = new Date(date.getTime() + 3 * 60 * 60 * 1000);
+        return `${trTime.toLocaleDateString('tr-TR')} - ${trTime.toLocaleTimeString('tr-TR', {
             hour: '2-digit',
             minute: '2-digit',
-        });
-
-        return `${formattedDate} - ${formattedTime}`;
+        })}`;
     };
 
     const renderItem = ({ item }) => {
@@ -43,40 +45,30 @@ export default function SanalPosScreen({ navigation }) {
         const statusImage = isSuccess
             ? require('../assets/odendi.png')
             : require('../assets/basarisiz.png');
-        const statusStyle = isSuccess ? styles.successBorder : styles.statusborder;
+        const statusStyle = isSuccess ? styles.successBorder : styles.failBorder;
 
         return (
-            <View style={styles.border}>
-                <View style={{ flexDirection: 'row' }}>
-                    <Image source={require('../assets/cards.png')} style={styles.borderimage} />
-                    <Text style={styles.cardnumbertext}> {item.customerName.substring(0, 14)}</Text>
+            <View style={styles.card}>
+                {/* Müşteri adı + durum badge aynı satır */}
+                <View style={styles.topRow}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Image source={require('../assets/cards.png')} style={styles.icon} />
+                        <Text style={styles.customerName}>{item.customerName.substring(0, 14)}</Text>
+                    </View>
 
-                    <View style={statusStyle}>
-                        <Image style={styles.statusimage} source={statusImage} />
-                        <Text style={styles.statustext}>{statusText}</Text>
+                    <View style={[styles.statusBadge, statusStyle]}>
+                        <Image source={statusImage} style={styles.statusIcon} />
+                        <Text style={styles.statusText}>{statusText}</Text>
                     </View>
                 </View>
 
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Text style={styles.cardtext}>İşlem Tarihi:</Text>
-                    <Text style={styles.cardtextanswer}>{formatDateTime(item.updatedAt)}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Text style={styles.cardtext}>Link Türü:</Text>
-                    <Text style={styles.cardtextanswer}>Müşteri Linki</Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Text style={styles.cardtext}>Müşteri Cep:</Text>
-                    <Text style={styles.cardtextanswer}>{item.customerPhone}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Text style={styles.cardtext}>Tutar:</Text>
-                    <Text style={styles.cardtextanswer}>{item.amount} TL</Text>
-                </View>
+                <Text style={styles.detailText}>İşlem Tarihi: {formatDateTime(item.updatedAt)}</Text>
+                <Text style={styles.detailText}>Link Türü: Müşteri Linki</Text>
+                <Text style={styles.detailText}>Müşteri Cep: {item.customerPhone}</Text>
+                <Text style={styles.detailText}>Tutar: {item.amount} TL</Text>
             </View>
         );
     };
-
 
     return (
         <View style={styles.container}>
@@ -86,121 +78,107 @@ export default function SanalPosScreen({ navigation }) {
                 onAvatarPress={() => console.log('Avatar')}
             />
 
-            <View style={styles.imageWrapper}>
-                <Image source={require('../assets/sanalpos.png')} style={styles.anaimage} />
-                <Text style={styles.headertext}> Sanal POS İşlemleri</Text>
-
-                <FlatList
-                    data={allPayments}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.uuid}
-                    contentContainerStyle={{ paddingBottom: 120 }}
-                    ListEmptyComponent={() => (
-                        <View style={{ alignItems: 'center' }}>
-                            <Image source={require('../assets/sanalposundata.png')} style={styles.undataimage} />
-                            <Text style={styles.undatatext}>Henüz ödeme bulunamadı.</Text>
-                        </View>
-                    )}
-                />
-
+            <View style={styles.headerImageWrapper}>
+                <Image source={require('../assets/sanalpos.png')} style={styles.headerImage} />
+                <Text style={styles.headerText}>Sanal POS İşlemleri</Text>
             </View>
+
+            <FlatList
+                data={allPayments}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.uuid}
+                contentContainerStyle={{ paddingBottom: hp('15%'), paddingHorizontal: wp('4%') }}
+                ListEmptyComponent={() => (
+                    <View style={{ alignItems: 'center' }}>
+                        <Image source={require('../assets/sanalposundata.png')} style={styles.emptyImage} />
+                        <Text style={styles.emptyText}>Henüz ödeme bulunamadı.</Text>
+                    </View>
+                )}
+            />
 
             <BottomPanel navigation={navigation} />
         </View>
     );
 }
 
-
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    imageWrapper: { flex: 1, alignItems: 'center' },
-    anaimage: { width: 90, height: 90, marginTop: 50 },
-    headertext: {
-        fontSize: 36,
+    container: { flex: 1, backgroundColor: '#F4F4F4' },
+    headerImageWrapper: { alignItems: 'center', marginTop: hp('3%') },
+    headerImage: { width: wp('20%'), height: wp('20%'), resizeMode: 'contain' },
+    headerText: {
+        fontSize: wp('7%'),
         color: '#0F5A2D',
         fontWeight: '600',
-        marginTop: 18,
-        marginBottom: 40,
+        marginTop: hp('1.5%'),
+        marginBottom: hp('2%'),
     },
-    border: {
-        borderWidth: 4,
-        width: 390,
-        height: 230,
-        borderRadius: 20,
-        marginBottom: 18,
+    card: {
+        borderWidth: 3,
         borderColor: '#0F5A2D',
-
+        borderRadius: 16,
+        padding: wp('4%'),
+        marginBottom: hp('2%'),
+        backgroundColor: '#FFF',
     },
-    borderimage: {
-        width: 40,
-        height: 40,
-        marginTop: 15,
-        marginLeft: 13,
-
+    topRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: hp('1.5%'),
     },
-    cardnumbertext: {
-        color: '#0F5A2D',
-        fontSize: 24,
-        marginLeft: 11,
-        marginTop: 15,
+    icon: {
+        width: wp('8%'),
+        height: wp('8%'),
+        resizeMode: 'contain',
+        marginRight: wp('2%'),
+    },
+    customerName: {
+        fontSize: wp('5%'),
         fontWeight: '600',
-        width:190,
+        color: '#0F5A2D',
     },
-    statusborder: {
-        alignItems: 'center',
+    statusBadge: {
         flexDirection: 'row',
-
-        borderWidth: 2,
-        width: 160,
-        height: 45,
-        borderRadius: 30,
-        marginTop: 10,
-        backgroundColor: '#981515',
-        borderColor: '#981515',
+        alignItems: 'center',
+        paddingHorizontal: wp('3%'),
+        paddingVertical: hp('0.6%'),
+        borderRadius: 25,
+        width: wp('40%'),
+        justifyContent: 'center',
     },
-    successBorder:{
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginLeft: 15,
-        borderWidth: 2,
-        width: 160,
-        height: 45,
-        borderRadius: 30,
-        marginTop: 10,
+    successBorder: {
         backgroundColor: '#0F5A2D',
-        borderColor: '#0F5A2D',
-
     },
-
-    statusimage: {
-        width: 30,
-        height: 30,
-        marginLeft: 10,
+    failBorder: {
+        backgroundColor: '#981515',
     },
-    statustext: {
-        fontSize: 20,
-        marginLeft: 4,
+    statusIcon: {
+        width: wp('6%'),
+        height: wp('6%'),
+        marginRight: wp('2%'),
+    },
+    statusText: {
         color: '#FFF',
-    },
-    cardtext: {
-        fontSize: 20,
-        fontWeight: '500',
-        marginLeft: 13,
-        width: 140,
-    },
-    cardtextanswer: {
-        fontSize: 20,
-        fontWeight: '500',
-        marginLeft: 13,
-    },
-    undataimage: {
-        marginTop: 20,
-        width: 120,
-        height: 120,
-    },
-    undatatext: {
-        marginTop: 15,
-        fontSize: 16,
+        fontSize: wp('4%'),
         fontWeight: '600',
+    },
+    detailText: {
+        fontSize: wp('4%'),
+        fontWeight: '600',
+        marginTop: hp('0.5%'),
+        color: '#333',
+    },
+    emptyImage: {
+        width: wp('30%'),
+        height: wp('30%'),
+        marginTop: hp('4%'),
+        resizeMode: 'contain',
+    },
+    emptyText: {
+        fontSize: wp('4.2%'),
+        fontWeight: '600',
+        marginTop: hp('1.5%'),
+        color: '#777',
+        textAlign: 'center',
     },
 });

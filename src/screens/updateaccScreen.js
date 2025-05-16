@@ -5,10 +5,12 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import { getUserProfile } from '../api/authApi';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function UpdateAccScreen({ navigation }) {
   const [profile, setProfile] = useState({
@@ -34,37 +36,43 @@ export default function UpdateAccScreen({ navigation }) {
   return (
       <View style={styles.container}>
         <Header title="Hesap Ayarları" />
-        <View style={{ alignItems: 'center' }}>
-          <Text style={styles.baslik}> Hesap Ayarları </Text>
 
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>Ad Soyad</Text>
-          </View>
-          <View style={styles.border}>
-            <Text style={styles.placetext}>{profile.name} {profile.surname}</Text>
-          </View>
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Text style={styles.title}>Hesap Ayarları</Text>
 
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>Şirket Adı</Text>
-          </View>
-          <View style={styles.border}>
-            <Text style={styles.placetext}>{profile.companyname}</Text>
+          {/* Ad Soyad */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Ad Soyad</Text>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoText}>{profile.name} {profile.surname}</Text>
+            </View>
           </View>
 
-          <View style={{ alignSelf: 'flex-start', marginLeft: 35 }}>
-            <Text style={styles.borderheader}>IBAN</Text>
-          </View>
-          <View style={styles.border}>
-            <Text style={styles.placetext}>{profile.iban}</Text>
+          {/* Şirket Adı */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Şirket Adı</Text>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoText}>{profile.companyname}</Text>
+            </View>
           </View>
 
+          {/* IBAN */}
+          <View style={styles.section}>
+            <Text style={styles.label}>IBAN</Text>
+            <View style={styles.infoBox}>
+              <Text style={styles.infoText}>{profile.iban}</Text>
+            </View>
+          </View>
+
+          {/* Logo Yükle */}
           <TouchableOpacity>
-            <View style={styles.uploadborder}>
-              <Image source={require('../assets/upload.png')} style={styles.image} />
-              <Text style={styles.borderheader}> Logo Yükle</Text>
+            <View style={styles.uploadBox}>
+              <Image source={require('../assets/upload.png')} style={styles.uploadIcon} />
+              <Text style={styles.uploadText}>Logo Yükle</Text>
             </View>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
+
         <BottomPanel navigation={navigation} />
       </View>
   );
@@ -73,49 +81,63 @@ export default function UpdateAccScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#F2F2F2',
   },
-  image: {
-    marginTop: 10,
-    width: 50,
-    height: 50,
-  },
-  uploadborder: {
+  scroll: {
     alignItems: 'center',
-    width: 200,
-    height: 129,
+    paddingBottom: hp('15%'),
+  },
+  title: {
+    marginTop: hp('4%'),
+    fontSize: wp('7%'),
+    fontWeight: '600',
+    color: '#0F5A2D',
+    marginBottom: hp('3%'),
+  },
+  section: {
+    width: wp('90%'),
+    marginBottom: hp('2.5%'),
+  },
+  label: {
+    fontSize: wp('5%'),
+    color: '#0F5A2D',
+    fontWeight: '600',
+    marginBottom: hp('1%'),
+  },
+  infoBox: {
+    width: '100%',
+    height: hp('7.5%'),
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#0F5A2D',
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    paddingHorizontal: wp('5%'),
+  },
+  infoText: {
+    fontSize: wp('4.5%'),
+    fontWeight: '600',
+    color: '#000',
+  },
+  uploadBox: {
+    marginTop: hp('1.5%'),
+    width: wp('55%'),
+    height: hp('16%'),
     borderWidth: 3,
     borderRadius: 20,
     borderColor: '#0F5A2D',
-    marginTop: 10,
-  },
-  borderheader: {
-    fontSize: 24,
-    color: '#0F5A2D',
-    fontWeight: '600',
-    justifyContent: 'flex-start',
-    marginBottom: 15,
-  },
-  baslik: {
-    marginTop: 45,
-    color: '#0F5A2D',
-    fontSize: 32,
-    fontWeight: '600',
-    marginBottom: 35,
-  },
-  placetext: {
-    marginLeft: 24,
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  border: {
-    width: 362,
-    height: 81,
-    borderRadius: 20,
-    borderColor: '#0F5A2D',
-    backgroundColor: '#f2f2f2',
-    borderWidth: 2,
+    backgroundColor: '#FFF',
+    alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 25,
+  },
+  uploadIcon: {
+    width: wp('12%'),
+    height: wp('12%'),
+    marginBottom: hp('1%'),
+  },
+  uploadText: {
+    fontSize: wp('4.5%'),
+    color: '#0F5A2D',
+    fontWeight: '600',
   },
 });

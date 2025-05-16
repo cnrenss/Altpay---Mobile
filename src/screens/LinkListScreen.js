@@ -1,11 +1,16 @@
-import React, { useEffect, useState,  } from 'react';
-import {View,  Text, StyleSheet, Image, FlatList, TouchableOpacity, } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    FlatList,
+    TouchableOpacity,
+} from 'react-native';
 import Header from '../components/Header';
-import BottomPanel from '../components/BottomPanel';
 import { getAllLinks, updateLinkStatus } from '../api/linkListApi';
 import Clipboard from '@react-native-clipboard/clipboard';
-
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function LinkListScreen({ navigation }) {
     const [links, setLinks] = useState([]);
@@ -20,28 +25,23 @@ export default function LinkListScreen({ navigation }) {
                 console.error('Link çekme hatası:', error.message);
             }
         };
-
         fetchLinks();
     }, []);
 
     const formatDateTime = (timestamp) => {
         const date = new Date(timestamp);
-        const turkishTime = new Date(date.getTime() + 3 * 60 * 60 * 1000);
-
-        const formattedDate = turkishTime.toLocaleDateString('tr-TR');
-        const formattedTime = turkishTime.toLocaleTimeString('tr-TR', {
+        const trTime = new Date(date.getTime() + 3 * 60 * 60 * 1000);
+        return `${trTime.toLocaleDateString('tr-TR')} - ${trTime.toLocaleTimeString('tr-TR', {
             hour: '2-digit',
             minute: '2-digit',
-        });
-
-        return `${formattedDate} - ${formattedTime}`;
+        })}`;
     };
+
     const handleCopyLink = (uuid) => {
         const paymentUrl = `http://localhost:3000/link/${uuid}/pay`;
-         Clipboard.setString(paymentUrl);
+        Clipboard.setString(paymentUrl);
         console.log('Link kopyalandı:', paymentUrl);
     };
-
 
     const handleStatusChange = async (uuid, newStatus) => {
         try {
@@ -56,74 +56,51 @@ export default function LinkListScreen({ navigation }) {
         }
     };
 
-
     const renderLinkItem = ({ item }) => {
-        let statusColor, statusText, statusIcon;
+        let statusStyle, statusText, statusIcon;
 
         switch (item.status) {
             case 'tamamlandi':
-                statusColor = styles.completed;
+                statusStyle = styles.completed;
                 statusText = 'Tamamlandı';
                 statusIcon = require('../assets/odendi.png');
                 break;
             case 'pasif':
-                statusColor = styles.passive;
+                statusStyle = styles.passive;
                 statusText = 'Pasif';
                 statusIcon = require('../assets/basarisiz.png');
                 break;
             case 'aktif':
             default:
-                statusColor = styles.active;
+                statusStyle = styles.active;
                 statusText = 'Aktif';
                 statusIcon = require('../assets/odendi.png');
                 break;
         }
 
         return (
-
             <View style={styles.card}>
-
                 <View style={styles.cardContent}>
-
-
-                    <Text style={styles.username}>{item.customerName.substring(0,15)}</Text>
-                    <Text style={styles.amount}>Tutar: {item.amount}</Text>
-                    <Text style={styles.customerPhone}>Telefon: {item.customerPhone}</Text>
-                    <Text style={styles.date}>Tarih: {formatDateTime(item.createdAt)}</Text>
-
+                    <Text style={styles.username}>{item.customerName.substring(0, 15)}</Text>
+                    <Text style={styles.infoText}>Tutar: {item.amount}</Text>
+                    <Text style={styles.infoText}>Telefon: {item.customerPhone}</Text>
+                    <Text style={styles.infoText}>Tarih: {formatDateTime(item.createdAt)}</Text>
                 </View>
 
-                <View style={[styles.statusBox, statusColor]}>
+                <View style={[styles.statusBox, statusStyle]}>
                     <Image source={statusIcon} style={styles.statusIcon} />
-                    <Text
-                        style={[styles.statusText, item.status === 'tamamlandi' && { fontSize: 17 }
-                        ]}
-                    >
-                        {statusText}
-                    </Text>
+                    <Text style={styles.statusText}>{statusText}</Text>
                 </View>
+
                 <TouchableOpacity style={styles.menuTouchable} onPress={() => setShowMenuFor(item.uuid)}>
                     <Image source={require('../assets/statusmenu.png')} style={styles.menuIcon} />
                 </TouchableOpacity>
 
-
-
-
-
-
-
                 {showMenuFor === item.uuid && item.status !== 'tamamlandi' && (
                     <View style={styles.menu}>
-                        <Text
-                            style={styles.menuItem}
-                            onPress={() => {
-                                handleCopyLink(item.uuid);
-                                setShowMenuFor(null);
-                            }}
-                        >
+                        <Text style={styles.menuItem} onPress={() => handleCopyLink(item.uuid)}>
                             Kopyala
                         </Text>
-
                         {item.status !== 'pasif' && (
                             <Text style={styles.menuItem} onPress={() => handleStatusChange(item.uuid, 'pasif')}>
                                 Pasif Et
@@ -145,144 +122,107 @@ export default function LinkListScreen({ navigation }) {
         );
     };
 
-
     return (
         <View style={styles.container}>
-            <Header
-                title="Ödeme Link Listesi"
-                onMenuPress={() => console.log('Menü')}
-                onAvatarPress={() => console.log('Avatar')}
-            />
+            <Header title="Ödeme Link Listesi" />
 
-            <View style={styles.imagewrapper}>
-                <Image style={styles.anaimage} source={require('../assets/LinkList.png')} />
-                <Text style={styles.baslik}>Ödeme Linkleri</Text>
+            <View style={styles.headerImageWrapper}>
+                <Image source={require('../assets/LinkList.png')} style={styles.headerImage} />
+                <Text style={styles.headerText}>Ödeme Linkleri</Text>
             </View>
 
             {links.length === 0 ? (
-                <View style={{ alignItems: 'center', marginTop: 20 }}>
-                    <Image style={{ marginTop: 50 }} source={require('../assets/nolink.png')} />
-                    <Text style={styles.emptyText}>
-                        Henüz oluşturulmuş bir ödeme linkiniz bulunmamaktadır.
-                    </Text>
+                <View style={{ alignItems: 'center', marginTop: hp('4%') }}>
+                    <Image source={require('../assets/nolink.png')} style={{ width: wp('40%'), height: wp('40%') }} />
+                    <Text style={styles.emptyText}>Henüz oluşturulmuş bir ödeme linkiniz bulunmamaktadır.</Text>
                 </View>
             ) : (
                 <FlatList
                     data={links}
                     renderItem={renderLinkItem}
                     keyExtractor={(item) => item.id.toString()}
-                    contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 10 }}
+                    contentContainerStyle={{ paddingBottom: hp('15%'), paddingHorizontal: wp('3%') }}
                     keyboardShouldPersistTaps="handled"
                 />
             )}
-
         </View>
-
-);
-
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#F4F4F4',
     },
-    menuTouchable: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        width: 40,
-        height: 40,
-        zIndex: 200,
-        justifyContent: 'center',
+    headerImageWrapper: {
         alignItems: 'center',
+        marginTop: hp('3%'),
     },
-
-
-
-    statusIcon: {
-        width: 30,
-        height: 30,
-        marginRight: 10,
+    headerImage: {
+        width: wp('25%'),
+        height: wp('25%'),
         resizeMode: 'contain',
     },
-    imagewrapper: {
-        alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 10,
-    },
-    anaimage: {
-        width: 90,
-        height: 90,
-        resizeMode: 'contain',
-    },
-    baslik: {
-        marginTop: 10,
-        fontSize: 32,
+    headerText: {
+        fontSize: wp('7%'),
         color: '#0F5A2D',
         fontWeight: '700',
-        marginBottom: 20,
+        marginTop: hp('1%'),
+        marginBottom: hp('2%'),
     },
     emptyText: {
-        fontSize: 16,
+        fontSize: wp('4%'),
         color: '#838383',
-        marginTop: 25,
+        marginTop: hp('2%'),
         textAlign: 'center',
     },
     card: {
         flexDirection: 'row',
+        backgroundColor: '#FFF',
         borderWidth: 2,
         borderColor: '#0F5A2D',
         borderRadius: 20,
-        width: 394,
-        height: 140,
-        padding: 15,
-        paddingRight: 20,
-        marginBottom: 15,
-        alignItems: 'center',
+        width: wp('92%'),
+        height: hp('14%'),
+        padding: wp('4%'),
+        marginBottom: hp('2%'),
         justifyContent: 'space-between',
-        backgroundColor: '#fff',
+        alignItems: 'center',
         position: 'relative',
     },
-
     cardContent: {
         flex: 1,
     },
     username: {
-        fontSize: 22,
+        fontSize: wp('5%'),
         fontWeight: 'bold',
         color: '#000',
     },
-
-    amount: {
-        fontSize: 18,
+    infoText: {
+        fontSize: wp('4%'),
         color: '#5F5F5F',
-        marginTop: 10,
-    },
-    customerPhone: {
-        fontSize: 18,
-        color: '#5F5F5F',
-        marginTop: 5,
-    },
-    date: {
-        fontSize: 17,
-        color: '#5F5F5F',
-        marginTop: 5,
+        marginTop: hp('0.3%'),
     },
     statusBox: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 6,
-        width: 156,
-        height: 40,
-        position: 'relative',
-        paddingHorizontal: 14,
-        justifyContent: 'center',
+        paddingHorizontal: wp('3%'),
+        paddingVertical: hp('0.8%'),
         borderRadius: 20,
+        height: hp('5%'),
+        width: wp('35%'),
+        justifyContent: 'center',
+    },
+    statusIcon: {
+        width: wp('5.5%'),
+        height: wp('5.5%'),
+        marginRight: wp('2%'),
+        resizeMode: 'contain',
     },
     statusText: {
-        color: '#fff',
+        color: '#FFF',
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: wp('4%'),
     },
     active: {
         backgroundColor: '#0F5A2D',
@@ -293,27 +233,30 @@ const styles = StyleSheet.create({
     completed: {
         backgroundColor: '#0F5A2D',
     },
-    menuIcon: {
-        width: 24,
-        height: 24,
-        resizeMode: 'contain',
+    menuTouchable: {
+        position: 'absolute',
+        top: hp('1%'),
+        right: wp('2.5%'),
+        zIndex: 2,
     },
-
+    menuIcon: {
+        width: wp('6%'),
+        height: wp('6%'),
+    },
     menu: {
         position: 'absolute',
-        top: 40,
-        right: 10,
+        top: hp('5%'),
+        right: wp('2.5%'),
         backgroundColor: '#fff',
         borderRadius: 8,
-        padding: 10,
+        padding: wp('3%'),
         elevation: 5,
-        zIndex: 99,
+        zIndex: 3,
     },
-
-
     menuItem: {
-        paddingVertical: 6,
+        paddingVertical: hp('0.8%'),
         color: '#0F5A2D',
         fontWeight: 'bold',
+        fontSize: wp('4%'),
     },
 });
