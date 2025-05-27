@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginUser } from '../api/authApi';
+import { loginUser, getApplicationStatus } from '../api/authApi';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const LoginScreen = ({ navigation }) => {
@@ -25,6 +25,18 @@ const LoginScreen = ({ navigation }) => {
         try {
             const data = await loginUser(email, password);
             await AsyncStorage.setItem('token', data.token);
+
+
+            const status = await getApplicationStatus();
+
+            if (status === 'none') {
+                Alert.alert('Başvuru Gerekli', 'Lütfen başvurunuzu tamamlayın.');
+                return;
+            } else if (status === 'pending') {
+                Alert.alert('Onay Bekleniyor', 'Başvurunuz onay sürecinde.');
+                return;
+            }
+
             Alert.alert('Giriş Başarılı');
             navigation.replace('PanelNav');
         } catch (error) {

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'http://192.168.0.13:3000';
+const BASE_URL = 'http://10.0.2.2:3000';
 
 export const loginUser = async (email, password) => {
     try {
@@ -67,3 +67,19 @@ export const updatePassword = async (oldPassword, newPassword, newPasswordRepeat
     return data;
 };
 
+export const getApplicationStatus = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) throw new Error('Token bulunamadı');
+
+    const response = await fetch('http://10.0.2.2:3000/application/status', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || 'Başvuru durumu alınamadı');
+
+    return data.status;
+};
