@@ -1,97 +1,79 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+**Altpay Mobil Uygulaması**
+- 
+- Altpay sanal pos işlemlerini simüle eden bir sistemdir. Bu proje kapsamında 4 farklı proje oluşturulmuştur.
+  - 2 Next.js Projesi
+  - 1 Node.js Projesi
+  - 1 ReactNative Projesi
 
-# Getting Started
+- Oluşturulan bu projelerde Node.js ve ReactNative projelerinde sorumluluk aldım. Reactnative projesi ile Mobil uygulamayı geliştirdim, Ayrıca Node.js projesindede sorumluluklar üstlenerek API'leri geliştirdim.
+- Bu projenin amacı web sitesi ile kordineli çalışan bir mobil uygulama yapmaktadır. Kayıt ve istenilen evraklar sadece web sayfası üzerinden gönderilebilir ve başvuru onaylandıktan sonra mobil uygulamaya giriş yapma hakkı kazanırsınız. Ekip arkadaşım Figma tasarımını oluşturdu ben ise mobil için tasarıma bağlı kalarak kodları oluşturdum. 
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Hoşgeldiniz
+-
+![hg](/uploads/671c0ed9a7237276bca8ef72273ad84e/hg.png)
+- Bu sayfada animasyon ile logo gelir.
+- Kullanıcı için yapılmış karşılama ekranıdır ardından giriş sayfası açılır.
 
-## Step 1: Start Metro
+ Giriş Sayfası 
+-
+![login](/uploads/32515ed26c85b284e45826def1a878e5/login.png)
+- Kullanıcının gmail adresi ve şifresini girmesi beklenir.
+- Login API çağırılır ve database ile eşleşme sağlanır ise şu soruları kontrol eder.
+  - Kullanıcı istenilen evrakları web sitesinden iletmiş mi?
+  - Kullanıcı evrakları iletti ise başvurusu onaylanmış mı?
+- Bu iki sorunun cevabı evet ise sisteme bearer token alarak giriş yapar aksi takdirde giriş yapamaz.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+Ana Sayfa 
+-
+![home](/uploads/55a03ebe3caab9e3b5357ab087213332/home.png)
+- Bu sayfada kullanıcı için hızlı erişim paneli ve Dashboard bulunur.
+- Kullanıcının oluşturduğu linklerde başarılı bir işlem olur ise son işlemler kısmında listelenir.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+ Sol Bar 
+-
+![bar](/uploads/9b5f8618da1c288c838bd95829d4cfcb/bar.png)
+- Kullanıcı için oluşturulmuş daha detaylı bir menü tasarımıdır.
 
-```sh
-# Using npm
-npm start
+ Link Oluşturma 
+-
+![linkcreate](/uploads/8e4a5b506afcecf7ed46499e673dff14/linkcreate.png)
 
-# OR using Yarn
-yarn start
-```
+- Bu sayfada sanal pos sahibi kullanıcı müşterisi için bir ödeme linki oluşturur. Gerekli bilgileri girer ve sisteme istenilen tutarda bir ödeme yapabileceği bir sayfa oluşturur.
 
-## Step 2: Build and run your app
+ Link Listesi 
+-
+![linklist](/uploads/4b2827e753de9253b68462eb10c6c74c/linklist.png)
+- Bu sayfada kullanıcının oluşturduğu tüm linkler listelenir. 
+- Linklerin Aktif veya Pasif durumda olduğunu görebilir.
+- Tamamlandı ise müşteri ödemeyi yaptığını teyit edebilir. 
+- Ayrıca kullanıcı müşterisine ileteceği linki bu sayfadan kopyalar ve müştesi ile paylaşır.
+- Müşteri Altpay'ın ödeme web sayfasına bu link sayesinde girer ve ödemesini yaoar.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+ Sanal Pos 
+-
+![sanalpos](/uploads/8735fe7b665fa64aac8210109d43764d/sanalpos.png)
+- Bu sayfada müştesinin ödemesinin başarılı olup olmadığını teyit edebilir.
 
-### Android
+ Hesap 
+-
+![account](/uploads/0830d9a046030f62a32743797326943e/account.png)
+- Hesap sayfasına yönelmek için gerekli bağlantıları içeren bir paneldir.
 
-```sh
-# Using npm
-npm run android
+Kişisel Bilgiler 
+- 
+![personelinfo](/uploads/cc1b9e6f1f0362ad9a9909f3482622d2/personelinfo.png)
+- Kullanıcının Altpay'e kayıt olurken web sitesinde paylaştığı şirket bilgisi, telefon numarası gibi önemli bilgilerin listelendiği screendir.
 
-# OR using Yarn
-yarn android
-```
+ Şifre Güncelleme 
+-
+![updatepass](/uploads/e58a4ab7c7137d9273b46e4a5b6f9dab/updatepass.png)
+- Kullanıcının şifresini güncelleyebileceği screendir. UpdatePass API'si çağrılır ve şifresi güncellenir.
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+ Altpay Projesinde Emeği Geçenler 
+-
+- ReactNative Projesi: **CANER ENİS**
+- Node.js Projesi : **Caner ENİS - Beyzanur GÜNAYDIN**
+- Next.js Projesi: **Beyzanur GÜNAYDIN**
+- Mobile Figma Tasarımı : **Gaye Toprak**
+- Web Figma Tasarımı : **Feyza Keskin**
+ 
