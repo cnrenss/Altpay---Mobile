@@ -73,7 +73,7 @@ export default function BottomPanel({navigation}) {
 
 const styles = StyleSheet.create({
   panel: {
-    height: 83,
+    height: 60,
     backgroundColor: '#0F5A2D',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -85,13 +85,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
   },
   icon: {
-    width: 50,
-    height: 50,
-    tintColor: 'white', // İstersen ikonları beyazlaştırırsın
+    width: 40,
+    height: 40,
+    tintColor: 'white',
   },
   centerIcon: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     tintColor: 'white',
   },
   modalContainer: {

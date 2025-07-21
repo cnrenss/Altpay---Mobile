@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, Animated } from 'react-native';
+import { View,  Image, StyleSheet, Animated } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 export default function StartScreen({ navigation }) {

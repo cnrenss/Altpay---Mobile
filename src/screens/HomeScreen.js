@@ -3,162 +3,175 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import Header from '../components/Header';
 import BottomPanel from '../components/BottomPanel';
 import TransactionCard from '../components/TransactionCard';
-
+import { getSuccessfulLinks } from '../api/linkListApi';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    const fetchMockTransactions = () => {
-      const data = [
-        { id: 1, name: 'Caner Uludağ', date: '02.05.2025 11:00', amount: 500 },
-        { id: 2, name: 'Ezgi Öztürk', date: '02.05.2025 12:30', amount: 750 },
-        { id: 3, name: 'Ahmet Demir', date: '02.05.2025 14:10', amount: 300 },
-      ];
-      setTransactions(data);
+    const fetchTransactions = async () => {
+      try {
+        const links = await getSuccessfulLinks();
+        const formatted = links.map(link => ({
+          id: link.id,
+          name: link.customerName,
+          date: new Date(link.updatedAt).toLocaleString('tr-TR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+          }),
+          amount: link.amount,
+        }));
+        setTransactions(formatted);
+      } catch (error) {
+        console.error('İşlemler alınamadı:', error.message);
+      }
     };
 
-    fetchMockTransactions();
+    fetchTransactions();
   }, []);
 
-  const handleMenuPress = () => {
-    console.log('Menü açılıyor...');
-  };
-
-  const handleAvatarPress = () => {
-    console.log('Avatar basıldı.');
-  };
-
   const StatCard = ({ title, value }) => (
-      <View style={styles.card}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.value}>{value}</Text>
+      <View style={styles.statCard}>
+        <Text style={styles.statTitle}>{title}</Text>
+        <Text style={styles.statValue}>{value}</Text>
       </View>
   );
 
   const QuickCard = ({ title, resim }) => (
-      <View style={styles.quickcards}>
-        <Image source={resim} style={styles.quicpng} />
-        <Text style={styles.title}>{title}</Text>
+      <View style={styles.quickCard}>
+        <Image source={resim} style={styles.quickImage} />
+        <Text style={styles.quickText}>{title}</Text>
       </View>
   );
 
   return (
-      <View style={{ flex: 1 }}>
-        <Header
-            title="Hoşgeldiniz!"
-            onMenuPress={handleMenuPress}
-            onAvatarPress={handleAvatarPress}
-        />
+      <View style={styles.container}>
+        <Header title="Hoşgeldiniz!" />
 
-        <View style={styles.container}>
-          <StatCard title="Bugünkü Satış" value="1500 TL" />
-          <StatCard title="Toplam Link" value="10" />
-          <StatCard title="Başarılı İşlem" value="5" />
-          <StatCard title="İade / İptal" value="3" />
-        </View>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View style={styles.statContainer}>
+            <StatCard title="Bugünkü Satış" value="1500 TL" />
+            <StatCard title="Toplam Link" value="5" />
+            <StatCard title="Başarılı İşlem" value="5" />
+            <StatCard title="İade / İptal" value="3" />
+          </View>
 
-        <View style={styles.serit}>
-          <Text style={styles.baslik}> Hızlı İşlemler</Text>
-        </View>
+          <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
+          <View style={styles.quickContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('LinkCreate')}>
+              <QuickCard title={"Link\nOluştur"} resim={require('../assets/arti.png')} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('LinkList')}>
+              <QuickCard title={"Link\nListesi"} resim={require('../assets/link.png')} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('SanalPos')}>
+              <QuickCard title={"Sanal\nPos"} resim={require('../assets/cards.png')} />
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.quickContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate('LinkCreate')}>
-            <QuickCard title="Link Oluşturma" resim={require('../assets/arti.png')} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('LinkList')}>
-            <QuickCard title="Link Listesi" resim={require('../assets/link.png')} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('SanalPos')}>
-            <QuickCard title="Sanal Pos" resim={require('../assets/cards.png')} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.serit}>
-          <Text style={styles.baslik}> Son İşlemler</Text>
-        </View>
-
-        <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 100,        marginTop: 15,
-        }}>
-          {transactions.map(item => (
-              <TransactionCard
-                  key={item.id}
-                  name={item.name}
-                  date={item.date}
-                  amount={item.amount}
-              />
-          ))}
+          <Text style={styles.sectionTitle}>Son İşlemler</Text>
+          <View style={styles.transactionContainer}>
+            {transactions.length === 0 ? (
+                <Text style={styles.emptyText}>Gösterilecek bir işlem bulunmamaktadır.</Text>
+            ) : (
+                transactions.map(item => (
+                    <TransactionCard
+                        key={item.id}
+                        name={item.name}
+                        date={item.date}
+                        amount={item.amount}
+                    />
+                ))
+            )}
+          </View>
         </ScrollView>
 
-        <BottomPanel style={styles.bottompanel} navigation={navigation} />
+        <BottomPanel navigation={navigation} />
       </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    flex: 1,
+    backgroundColor: '#F4F4F4',
+  },
+  scrollContent: {
+    paddingBottom: hp('15%'),
+    paddingHorizontal: wp('4%'),
+  },
+  statContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    padding: 15,
+    marginTop: hp('2%'),
   },
-  card: {
-    width: 182,
-    height: 100,
+  statCard: {
+    width: wp('44%'),
+    height: hp('12%'),
     backgroundColor: '#E9E9E9',
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: '#0F5A2D',
     borderRadius: 16,
-    marginBottom: 16,
-    padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: hp('2%'),
   },
-  title: {
-    fontSize: 20,
+  statTitle: {
+    fontSize: wp('4.5%'),
     fontWeight: '600',
     color: '#000',
-    marginBottom: 6,
     textAlign: 'center',
   },
-  value: {
-    fontSize: 16,
+  statValue: {
+    fontSize: wp('4%'),
     fontWeight: '600',
     color: '#000',
   },
-  serit: {
-    width: 440,
-    height: 47,
-    backgroundColor: '#59927042',
-    justifyContent: 'center',
-  },
-  baslik: {
-    fontSize: 32,
+  sectionTitle: {
+    fontSize: wp('7%'),
     color: '#0F5A2D',
     fontWeight: '600',
-    marginLeft: 14,
-  },
-  quickcards: {
-    width: 132,
-    height: 181,
-    borderColor: '#0F5A2DAD',
-    borderRadius: 30,
-    borderWidth: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    marginBottom: 35,
-  },
-  quicpng: {
-    width: 50,
-    height: 50,
+    marginTop: hp('2%'),
+    marginBottom: hp('1%'),
+    backgroundColor:'#59927042',
   },
   quickContainer: {
-    marginTop: 20,
     flexDirection: 'row',
-    padding: 5,
     justifyContent: 'space-between',
-    paddingHorizontal: 4,
+    marginBottom: hp('3%'),
+  },
+  quickCard: {
+    width: wp('27%'),
+    height: hp('15%'),
+    borderColor: '#0F5A2DAD',
+    borderRadius: 20,
+    borderWidth: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: wp('2%'),
+    backgroundColor: '#FFF',
+  },
+  quickImage: {
+    width: wp('10%'),
+    height: wp('10%'),
+    marginBottom: hp('1.5%'),
+  },
+  quickText: {
+    textAlign: 'center',
+    fontSize: wp('4%'),
+    fontWeight: '600',
+    color: '#000',
+  },
+  transactionContainer: {
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: wp('4.5%'),
+    fontWeight: '500',
+    marginTop: hp('3%'),
+    color: '#888',
+    textAlign: 'center',
   },
 });
