@@ -10,7 +10,7 @@
 
 Hoşgeldiniz
 -
-![hg](/uploads/671c0ed9a7237276bca8ef72273ad84e/hg.png)
+![hg](./uploads/671c0ed9a7237276bca8ef72273ad84e/hg.png)
 - Bu sayfada animasyon ile logo gelir.
 - Kullanıcı için yapılmış karşılama ekranıdır ardından giriş sayfası açılır.
 
